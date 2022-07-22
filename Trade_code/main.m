@@ -4,13 +4,13 @@
 
 
 %% Parameters 
-para = parameter(2); % 2 countries
+para = parameter(5); % 2 countries
 
 %% steady state
 display(' ');
 display('---------------------------------------------------------------');
 display(' steady state');
-t1 = tic; % time start nb
+t1 = tic; % time start 
 
 [ssp, ssQ] = solve_ss(para); 
 time = toc(t1);
