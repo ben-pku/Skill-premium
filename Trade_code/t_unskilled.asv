@@ -13,7 +13,7 @@ function [p, Q] = t_unskilled(Q, para, ssp, ssQ)
     iter = 0;
     dif = 10;
     
-    while max(dif) > 1e-3 && iter<= 10000
+    while dif > 1e-3 && iter<= 10000
 
         iter = iter + 1;
         % calculte the skilled labor's wage
@@ -39,17 +39,13 @@ function [p, Q] = t_unskilled(Q, para, ssp, ssQ)
 %             Sales_m = repmat(Spnd_m(:, t), 1, para.num ) .* Q.pi(:, :, t);
 %             Q.Y_m(:, t) = (sum(Sales_m, 1))' ./p.p_m(:, t);
 %         end
-        Spnd_m = reshape(Spnd_m, [para.num, 1 , para.TT]) ;
-        Sales_m = repmat(Spnd_m, 1, para.num, 1 ) .* Q.pi;
-        Q.Y_m = reshape( sum(Sales_m, 1), para.num, para.TT ) ./ p.p_m;
-        
-        
+        Sales_m = reshape(Spnd_m, [para.num, 1 , para.TT])
+  
         % verify the Y_m %
-        Q.Y_m = Q.M ./ repmat(1-para.v_m, 1, para.TT);
+        Q.Ym = Q.M ./ repmat(1-para.v_m, 1, para.TT);
 
         
         % trade deficit
-        Spnd_m = reshape(Spnd_m, [para.num , para.TT]) ;
         Q.F = Spnd_m - p.p_m .* Q.Y_m;
 
 
@@ -69,9 +65,9 @@ function [p, Q] = t_unskilled(Q, para, ssp, ssQ)
 
         
         telapsed=toc(t_unskilled); sec=mod(telapsed,60); min=floor(telapsed/60);
-        fprintf('\t t_unskillled Iterations completed: %6.0f\n',iter);
+        fprintf('\t\t t_unskillled Iterations completed: %6.0f\n',iter);
         fprintf('\t\t\t time elapsed: %6.0f min, %2.0f sec\n',min,sec);
-        fprintf('\t\t\t dif w_l: %e\n',max(dif));
+        fprintf('\t\t\t dif w_l: %3.10f\n',dif);
         
         end
     

@@ -35,12 +35,12 @@ function [p, Q] = t_invest(para, ssp, ssQ)
         Q.rho = smooth * new_rho + (1-smooth) * Q.rho;
         
         telapsed=toc(t_invest); sec=mod(telapsed,60); mnt=floor(telapsed/60);
-        fprintf('\t t_invest Iterations completed: %6.0f\n',iter);
+        fprintf(' t_invest Iterations completed: %6.0f\n',iter);
         fprintf('\t\t time elapsed: %6.0f min, %2.0f sec\n',mnt,sec);
-        fprintf('\t\t dif inv rate: %3.10f\n',dif);
+        fprintf('\t\t dif inv rate: %e\n',dif);
     end
 
-    if iter >= 1e-4
+    if iter >= 1e4
         disp('t_invest fails.\n');
         return
     end
