@@ -36,17 +36,23 @@ function [para] = parameter( num )
     para.beta = 0.99; % time discount rate
     para.delta = 0.1; % depreciation rate
     
+     %% Transitional Path         
+     % initial quantity
+     para.K1 = ones(para.num, 1);
+     % whole time range
+     para.TT = 150;
+     
     %% Labor resource
-    para.L = [12.6; 2.8; 2.8; 2.8; 2.8];
-    para.H = [1.4;  1.2; 2.8; 2.8; 2.8];
+    para.L = [12.6; 2.8];
+    para.H = [1.4;  1.2];
+    para.Lt = repmat(para.L, 1, para.TT) ;
+    para.Ht = repmat(para.H, 1, para.TT) ;
     
-    %% Iceberg Cost
-    para.d = [1  1.25 1.25 1.25 1.25;
-                   1.55  1 1.25 1.25 1.25;
-                   1.25 1.25 1 1.25 1.25 ;
-                   1.25 1.25 1.25 1 1.25 ;
-                   1.25 1.25 1.25 1.25 1 ;
-                   ];
-    
+    %% Iceberg Cost 
+    para.d = [1  1.25 ;
+                   1.55  1         ];
+   
+
+
 end
 

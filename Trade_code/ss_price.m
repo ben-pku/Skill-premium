@@ -29,7 +29,7 @@ function [p] = ss_price(w_l, w_h, para)
             (p.w_l ./ (para.alpha2*para.v_m) ).^(para.alpha2*para.v_m ) .*...
             (p.w_h ./(para.beta2*para.v_m ) ).^(para.beta2*para.v_m ) .*...
             (p.p_m ./(1-para.v_m) ).^(1-para.v_m) ;
-        [element, phi_s] = phi(p.u, para);
+        [~, phi_s] = phi(p.u, para);
         
         p_mnew = xi .* phi_s.^(-1./para.theta) ;
         rnew = (1/para.beta+ para.delta -1)* p_mnew;

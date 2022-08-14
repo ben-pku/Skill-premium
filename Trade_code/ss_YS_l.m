@@ -1,17 +1,18 @@
 function [p,Q] = ss_YS_l(p, para)
 %SS_YS_L calculate the corresponding production in low-skill service
 %   calculate by combining 12 formulas  
+% A · ⃗ YA + ⃗ B · ⃗ YSL + ⃗ C · ⃗ YSH = ⃗ D
 %   F .* Q.YS_l = E
 
-     A = p.p_a .* (1 - (p.r-para.delta*p.p_m) ./ p.r *( 1-para.alpha1 - para.alpha1*(1-para.alpha2-para.beta2)/para.alpha2 ) );
-     B = p.p_l .* ( para.gamma1/para.gamma2 + 1 - (p.r-para.delta*p.p_m) ./ p.r *(1-para.alpha3-para.beta3 - para.alpha3/para.alpha2 *(1-para.alpha2-para.beta2) ) );
-     C = p.p_h .* (1 - (p.r-para.delta*p.p_m) ./ p.r * (1-para.alpha4-para.beta4- para.alpha4/para.alpha2 *(1-para.alpha2-para.beta2) ));
-     D = p.w_l .* para.L  .* ( 1 + (p.r-para.delta*p.p_m) ./ p.r * (1-para.alpha2-para.beta2)/para.alpha2 ) + p.w_h .* para.H - para.theta_l * para.gamma1/para.gamma2 * p.p_l ;
+     A = p.p_a .* (1 - (p.r-para.delta*p.p_m) ./ p.r .*( 1-para.alpha1 - para.alpha1*(1-para.alpha2-para.beta2)* para.v_m /para.alpha2 ) );
+     B = p.p_l .* ( para.gamma1/para.gamma2 + 1 - (p.r-para.delta*p.p_m) ./ p.r .*(1-para.alpha3-para.beta3 - para.alpha3/para.alpha2 *(1-para.alpha2-para.beta2)* para.v_m ) );
+     C = p.p_h .* (1 - (p.r-para.delta*p.p_m) ./ p.r .* (1-para.alpha4-para.beta4- para.alpha4/para.alpha2 *(1-para.alpha2-para.beta2)* para.v_m ));
+     D = p.w_l .* para.L  .* ( 1 + (p.r-para.delta*p.p_m) ./ p.r .* (1-para.alpha2-para.beta2) .* para.v_m /para.alpha2 ) + p.w_h .* para.H - para.theta_l * para.gamma1/para.gamma2 * p.p_l ;
 
-     E = D - C .* ( para.gamma3/para.gamma2 *para.theta_l .* p.p_l ./ p.p_h - para.theta_h) -...
+     E = D - C .* ( para.gamma3/para.gamma2 *para.theta_l * p.p_l ./ p.p_h - para.theta_h) -...
                     A .* (para.theta_a + (1-para.gamma1-para.gamma2-para.gamma3)/para.gamma1 * para.theta_l * p.p_l./p.p_a );
     
-     F = A .* (1-para.gamma1-para.gamma2-para.gamma3)/para.gamma1 .* p.p_l./p.p_a + B + para.gamma3/para.gamma2* C .* p.p_l./p.p_h;
+     F = A * (1-para.gamma1-para.gamma2-para.gamma3)/para.gamma1 .* p.p_l./p.p_a + B + para.gamma3/para.gamma2* C .* p.p_l./p.p_h;
      Q.YS_l = E./F;
 
 %     %% guess the capital low-skill service
