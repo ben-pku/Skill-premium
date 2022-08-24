@@ -35,6 +35,7 @@ function [para] = parameter( num )
     
     para.beta = 0.99; % time discount rate
     para.delta = 0.1; % depreciation rate
+    para.sigma = 0.5; % intertemporary substitution elasticity
     
      %% Transitional Path         
      % initial quantity

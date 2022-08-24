@@ -1,19 +1,9 @@
 function [p] = ss_price(w_l, w_h, para)
 %% SS_PRICE solve other price indexes
 %   given w_l, w_h and solve r, p_a, p_m, p_l, p_h -- five price indexes
-%% fsolve method
-%     p.w_l = w_l;
-%     p.w_h = w_h;
-%     para.xi=gamma(1+(1-para.eta)./para.theta).^(1./(1-para.eta));
-%     
-%     f = @(r_p_m) price(r_p_m, p.w_l, p.w_h, para);
-%     x0 = [0.1*ones(para.num, 1) , 0.1* ones(para.num, 1)];
-%     [p.r , p.p_m ] = fsolve(f, x0);
-%     
-    
-    
+        
     %% guess initial price indexes
-    p.p_m = 1e-3 * ones(para.num, 1);
+    p.p_m = 1e-1 * ones(para.num, 1);
     p.r = (1/para.beta+ para.delta -1)* p.p_m;
     p.w_l = w_l;
     p.w_h = w_h;
@@ -31,7 +21,7 @@ function [p] = ss_price(w_l, w_h, para)
             (p.p_m ./(1-para.v_m) ).^(1-para.v_m) ;
         [~, phi_s] = phi(p.u, para);
         
-        p_mnew = xi .* phi_s.^(-1./para.theta) ;
+        p_mnew = xi .* (phi_s.^(-1./para.theta) );
         rnew = (1/para.beta+ para.delta -1)* p_mnew;
         
         dif = max( abs( [p_mnew rnew]-[p.p_m p.r] ) ./[p.p_m p.r] );
@@ -55,6 +45,8 @@ function [p] = ss_price(w_l, w_h, para)
 
      p.w_l = w_l;
      p.w_h = w_h;
+     g0 = 1-para.gamma1-para.gamma2-para.gamma3;
+     p.p_c  = (p.p_a / g0).^g0 .* (p.p_m / para.gamma1) .^ para.gamma1 .* (p.p_l / para.gamma2) .^ para.gamma2.* (p.p_h / para.gamma3) .^ para.gamma3 ;
     
      
 end

@@ -15,17 +15,15 @@ function [p] = t_price(p, para, ssp)
     
 %     phi_s = zeros(para.num, para.TT);
     %% iterate to solve the solution
-    while max(dif) >= 1e-6 && iter< 10000
+    while max(dif) >= 1e-5 && iter< 10000
         iter = iter+1;
-       
-        p.u = (p.r ./ ((1-para.alpha2-para.beta2)*v_m)  ).^((1-para.alpha2-para.beta2)*v_m) .*...
-            (p.w_l ./ (para.alpha2*v_m) ).^(para.alpha2*v_m ) .*...
-            (p.w_h ./(para.beta2*v_m ) ).^(para.beta2*v_m ) .*...
-            (p.p_m ./(1-v_m) ).^(1-v_m) ;
         
+        p.u = (p.r ./ ((1-para.alpha2)*v_m)  ).^((1-para.alpha2)*v_m) .*...
+            (p.w_l ./ (para.alpha2*v_m) ).^(para.alpha2*v_m ) .*...
+            (p.w_h ./((1-para.beta2)*(1-v_m) ) ).^(  (1-para.beta2)*(1-v_m) ) .*...
+            (p.p_m ./(para.beta2 * (1-v_m)) ).^(para.beta2 * (1-v_m)) ;
 
         [~, phi_s] = dy_phi(p.u, para);
-        
         
         p_mnew = xi .* phi_s.^(-1./repmat(para.theta,1,para.TT)) ;
 
@@ -36,21 +34,17 @@ function [p] = t_price(p, para, ssp)
     end
         
     if iter >=10000
-        display("ss_price falied. \n");
+        disp("t_price falied. \n");
         return
     end
-
-%     % fsolve
-%     pm0 = repmat(ssp.p_m, 1, para.TT );
-%     options = optimoptions(@fsolve, 'Algorithm' , 'trust-region-dogleg');
-%     p.p_m =  fsolve(  @(P_m)Pm(P_m, p, para) , pm0, options);
 
     p.p_a = (p.r/(1-para.alpha1)) .^ (1-para.alpha1) .* ( p.w_l/para.alpha1) .^ (para.alpha1) ./ repmat(para.A_a, 1 , para.TT);
     p.p_l = (p.r/(1-para.alpha3-para.beta3)) .^(1-para.alpha3-para.beta3) .* ( p.w_l/para.alpha3).^(para.alpha3)...
             .* ( p.w_h/para.beta3).^(para.beta3)  ./ repmat(para.A_l, 1 , para.TT);
     p.p_h = (p.r/(1-para.alpha4-para.beta4)) .^(1-para.alpha4-para.beta4) .* ( p.w_l/para.alpha4).^(para.alpha4)...
             .* ( p.w_h/para.beta4).^(para.beta4)  ./ repmat(para.A_h, 1 , para.TT);
-        
-         
+    g0 = 1-para.gamma1-para.gamma2-para.gamma3;
+    p.p_c  = (p.p_a / g0).^g0 .* (p.p_m / para.gamma1) .^ para.gamma1 .* (p.p_l / para.gamma2) .^ para.gamma2.* (p.p_h / para.gamma3) .^ para.gamma3 ;
+    
 end
 

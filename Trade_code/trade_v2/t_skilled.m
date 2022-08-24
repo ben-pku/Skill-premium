@@ -9,7 +9,7 @@ function [p, Q] = t_skilled(p, Q, para, ssp, ssQ)
     iter = 0;
     dif = 10;
     
-    while max(dif)>1e-3 && iter<10000
+    while max(dif)>1e-5 && iter<10000
         iter = iter + 1;
         
         % calculate interest rate in each country
@@ -24,7 +24,7 @@ function [p, Q] = t_skilled(p, Q, para, ssp, ssQ)
         smooth = .2*rand + .8;
         p.w_h = smooth*neww_h + (1-smooth)*p.w_h;
         
-        if mod(iter, 10) ==0
+        if mod(iter, 1) ==0
             fprintf('\t\t t_skilled Iterations completed: %6.0f, and the dif is %e.\n',iter, max(dif));
         end
         

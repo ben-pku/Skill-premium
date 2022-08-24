@@ -1,14 +1,15 @@
 function [p, Q] = t_interest(p, Q, para, ssp, ssQ)
-%T_INTEREST Calculate right interest rate for each country
-%   Guess and update interest rate for each country by capital mkt clearing
+%% T_INTEREST Calculate right interest rate and skilled labor's wage for each country
+%   Guess and update interest rate r, and w_h for each country by capital and skilled labor mkt clearing
 %   condition
     
-    %% guess interest rate r
+    %% guess interest rate r and skilled labor's wage
     p.r = repmat(ssp.r, 1, para.TT);
+    p.w_h =  repmat(ssp.w_h, 1, para.TT);
 
     iter  = 0;
     dif = 10;
-    while max(dif)> 1e-3 && iter <10000
+    while max(dif)> 1e-5 && iter<1e4
         iter = iter + 1;
         
         % calculate all price indexes
@@ -21,7 +22,6 @@ function [p, Q] = t_interest(p, Q, para, ssp, ssQ)
             
         end
         
-     
         % quantity
         % calculate YS_l   A * YS_l = B
         A = p.p_l / para.gamma2;
@@ -73,16 +73,28 @@ function [p, Q] = t_interest(p, Q, para, ssp, ssQ)
         % update interest rate
         phi = 1e-1; % Scale factor
         newr= p.r .* (1+ phi * ZK ./ Q.K );
-        dif = 1/phi * max( abs(  (newr - p.r)./ p.r)  ); 
+        dif_r = max(max( abs(  (newr - p.r)./ p.r)  )); 
         smooth = .2*rand + .8;
         p.r = smooth*newr + (1-smooth)*p.r;
 
+        % update w_h
+        % excess demand for skilled labor
+        ZH = Q.H_l + Q.H_h + Q.H_m - para.Ht;
+        % update skilled labor's wage
+        omega = 1e-1; % scale factor
+        neww_h  = p.w_h .* (1+ omega * ZH ./ para.Ht );
+        dif_w_h =  max( max( abs( (neww_h - p.w_h)./p.w_h  ) )  ); 
+        smooth = .2*rand + .8;
+        p.w_h = smooth*neww_h + (1-smooth)*p.w_h;
+        
+        
+        dif = max(dif_r, dif_w_h);
         
     end
     
     if iter >= 10000
         display("t_interest fails. \n");
-        return
+        %return
     end
     
 end

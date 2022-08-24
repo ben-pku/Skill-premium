@@ -12,7 +12,7 @@ function [p, Q, para] = solve_ss(para)
     dif = 10;
     iter=0;
 
-    while dif>=1e-6 && iter <10000 
+    while dif>=1e-8 && iter <10000 
         iter = iter+1;
         
         %% 3 get the corresponding skilled labor's wage

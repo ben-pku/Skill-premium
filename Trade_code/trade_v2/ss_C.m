@@ -1,19 +1,18 @@
-function [p,Q] = ss_YS_l(p, para)
-%SS_YS_L calculate the corresponding production in low-skill service
+function [p,Q] = ss_C(p, para)
+%SS_C calculate the corresponding C, consumption
 %   calculate by combining 12 formulas  
-% A · ⃗ YA + ⃗ B · ⃗ YSL + ⃗ C · ⃗ YSH = ⃗ D
-%   F .* Q.YS_l = E
+%  p.p_c .* Q.C + A * p.p_a .* YA + B * p.p_l.* YS_l + C * p.p_h .* YS_h =D * wl*L+wh*H 
+%   F .* Q.C = E
 
-     A = p.p_a .* (1 - (p.r-para.delta*p.p_m) ./ p.r .*( 1-para.alpha1 - para.alpha1*(1-para.alpha2-para.beta2)* para.v_m /para.alpha2 ) );
-     B = p.p_l .* ( para.gamma1/para.gamma2 + 1 - (p.r-para.delta*p.p_m) ./ p.r .*(1-para.alpha3-para.beta3 - para.alpha3/para.alpha2 *(1-para.alpha2-para.beta2)* para.v_m ) );
-     C = p.p_h .* (1 - (p.r-para.delta*p.p_m) ./ p.r .* (1-para.alpha4-para.beta4- para.alpha4/para.alpha2 *(1-para.alpha2-para.beta2)* para.v_m ));
-     D = p.w_l .* para.L  .* ( 1 + (p.r-para.delta*p.p_m) ./ p.r .* (1-para.alpha2-para.beta2) .* para.v_m /para.alpha2 ) + p.w_h .* para.H - para.theta_l * para.gamma1/para.gamma2 * p.p_l ;
+     A = ( para.delta * p.p_m - p.r) ./ p.r *( 1-para.alpha1 - para.alpha1/para.alpha2*(1-para.alpha2-para.beta2) );
+     B = ( para.delta * p.p_m - p.r) ./ p.r * ( -(1-para.alpha2-para.beta2)*para.alpha3/para.alpha2 + 1-para.alpha3-para.beta3 );
+     C = ( para.delta * p.p_m - p.r) ./ p.r * ( -(1-para.alpha2-para.beta2)*para.alpha4/para.alpha2 + 1-para.alpha4-para.beta4 );
+     D = 1- ( para.delta * p.p_m - p.r) ./ p.r * (1-para.alpha2-para.beta2)/para.alpha2;
 
-     E = D - C .* ( para.gamma3/para.gamma2 *para.theta_l * p.p_l ./ p.p_h - para.theta_h) -...
-                    A .* (para.theta_a + (1-para.gamma1-para.gamma2-para.gamma3)/para.gamma1 * para.theta_l * p.p_l./p.p_a );
-    
-     F = A * (1-para.gamma1-para.gamma2-para.gamma3)/para.gamma1 .* p.p_l./p.p_a + B + para.gamma3/para.gamma2* C .* p.p_l./p.p_h;
-     Q.YS_l = E./F;
+     E = D .* p.w_l.*para.L + p.w_h .* para.H - ( A .* p.p_a * para.theta_a - B .* p.p_l * para.theta_l - C .* p.p_h * para.theta_h );
+     F = 1 + A * (1-para.gamma1 - para.gamma2 - para.gamma3) + B * para.gamma2 + C * para.gamma3  ;
+     
+     Q.C = E./ F;
 
 %     %% guess the capital low-skill service
 %     Q.K_l = 1e-5*ones(para.num, 1);
