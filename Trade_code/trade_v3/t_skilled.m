@@ -8,7 +8,7 @@ function [p, Q] = t_skilled(p, Q, para, ssp, ssQ)
     iter = 0;
     dif = 10;
     
-    while max(dif)>1e-4 && iter<10000
+    while max(dif)>1e-5 && iter<10000
         iter = iter + 1;
         [p] = t_price(p, para, ssp);
         

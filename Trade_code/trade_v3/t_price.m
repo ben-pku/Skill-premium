@@ -15,7 +15,7 @@ function [p] = t_price(p, para, ssp)
     
 %     phi_s = zeros(para.num, para.TT);
     %% iterate to solve the solution
-    while max(dif) >= 1e-5 && iter< 10000
+    while max(dif) >= 1e-6 && iter< 10000
         iter = iter+1;
         
         p.u = (p.r ./ ((1-para.alpha2)*v_m)  ).^((1-para.alpha2)*v_m) .*...

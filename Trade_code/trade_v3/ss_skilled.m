@@ -10,7 +10,7 @@ function [p, Q] = ss_skilled(w_l, para)
     dif = 100;
     omega = 1e-1; % Scale factor used to ensure that neww_h > 0.
     
-    while dif > 1e-6 & iter<10000
+    while dif > 1e-8 & iter<10000
         iter = iter +1 ;
         p = ss_price(p.w_l, p.w_h, para);
         

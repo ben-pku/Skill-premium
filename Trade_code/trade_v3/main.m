@@ -10,7 +10,7 @@ para = parameter(2); % number of countries
 %% steady state
 disp(' ');
 disp('---------------------------------------------------------------');
-disp('steady state algorithm');
+disp('Solve steady state');
 t3 = tic;
 
 [ssp, ssQ] = solve_ss(para);
@@ -23,7 +23,7 @@ fprintf('Running time is %.3f seconds. \n', time3);
 para = parameter(2); % number of countries
 disp(' ');
 disp('---------------------------------------------------------------');
-disp(' transition path algorithm');
+disp('Solve transition path');
 t2 = tic;
 
 [tran_p, tran_Q] = t_path(para, ssp, ssQ);

@@ -25,7 +25,7 @@ function [p, Q] = t_path(para, ssp, ssQ)
         iter = 0;  % number of iterations
         dif = 10; % convergent indicator
         
-        while dif > 1e-4 && iter <1e6
+        while dif > 1e-5 && iter <1e6
             iter = iter + 1;
             
             % solve right w_l, w_h, r, given K
@@ -61,6 +61,11 @@ function [p, Q] = t_path(para, ssp, ssQ)
             if min(min(Q.i)) <0
                 disp("stop");
             end
+        end
+        
+        if iter <= 1e4
+            disp('---------------------------------------------------------------');
+            disp('transition path solved');
         end
         
 end
