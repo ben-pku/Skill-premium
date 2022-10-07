@@ -881,3 +881,43 @@ save "C:\Users\Benjamin Hwang\Documents\大三_下\LijunZhu-project-2022\skill_p
 ****** skill is defined as higher than college-- skill premium
 ****** double check data
 
+
+
+****** provicial sp *******
+cd "C:\Users\Benjamin Hwang\Documents\大三_下\LijunZhu-project-2022\skill_premium_sc\data\skill_premium\cn_sp\UHS\sp_uhs_panel"
+use cn_sp_uhs1986-2014.dta,clear
+replace experience2 = experience^2
+gen experience3 = experience^3
+gen experience4 = experience^4
+merge m:1 year using "C:\Users\Benjamin Hwang\Documents\大三_下\LijunZhu-project-2022\skill_premium_sc\data\skill_premium\cn_sp\cn_cpi.dta"
+drop if _merge==2
+drop _merge
+gen low = 0
+replace low=1 if wage < (206/12/2) & year<=2000
+replace low=1 if wage < (865/12/2 ) & year<=2010 & year >2000
+replace low=1 if wage/cpi < (2300/12/563.5/2) & year>2010
+label define prov 11 "北京" 14 "山西" 21 "辽宁" 23 "黑龙江" 31 "上海" 32 "江苏" 33 "浙江" 34 "安徽" 36 "江西" 37 "山东" 41 "河南" 42 "湖北" 44 "广东" 50 "重庆" 51 "四川" 53 "云南" 61 "陕西" 62 "甘肃",modify
+label values prov prov
+
+gen sp = 0
+
+forvalues y = 1986(1)2014{
+	di `y'
+	foreach p of numlist 11  14  21  23  31  32  33  34  36  37  41  42  44  50  51  53  61  62 {
+		di `p'
+		capture{
+		reghdfe lw college experience experience2 experience3 experience4 if(((age>=16&age<=55& sex==2)|(age>=16&age<=60& sex==1)) & year ==`y' & prov == `p' & low==0 & exclude==0), absorb(sex)
+		replace sp =  _b[college] if (year ==`y' & prov == `p')
+		}
+	}
+
+	
+}
+
+sort year prov
+save prov.dta, replace
+collapse sp ,by(year prov)
+
+twoway (scatter sp year if year <= 2010), by(prov, graphregion(color(white)))
+
+mkdensity sp if(year==1986 | year==1996 | year==1998 | year==1999 | year==2001 | year==2004 | year ==2006 | year ==2010), over(year) title("Provincial Skill Premium, China")

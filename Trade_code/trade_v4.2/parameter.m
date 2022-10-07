@@ -12,7 +12,7 @@ function [para] = parameter( num )
     para.alpha2 = 1/2;
     para.rho = 0.8; %SEI KH - L
     para.beta2 = 0.8;
-    para.v1 = 0.6;
+    para.v1 = 1/2;
     
     para.e = 1.5;  % substitution elasticity of intermediate goods
     para.T = [0.6; 0.9] .* ones(para.num, 1);
@@ -34,10 +34,10 @@ function [para] = parameter( num )
     para.delta = 0.1; % depreciation rate
     para.sigma = 0.06; % intertemporary substitution elasticity ISE
     % non homothetic para 
-    para.eps_a = 0.45;   % agri
+    para.eps_a = 0.99;   % agri
     para.eps_m = 1; % manu
-    para.eps_sl = 1.27; % SL
-    para.eps_sh = 1.43; % SH
+    para.eps_sl = 1.15; % SL
+    para.eps_sh = 1.23; % SH
     para.Omega_a = 1;
     para.Omega_m = 1;
     para.Omega_sl = 1;
@@ -47,11 +47,11 @@ function [para] = parameter( num )
      % initial quantity
      para.K1 = [0.6;  1.5] .* ones(para.num, 1);
      % whole time range
-     para.TT = 200;
+     para.TT = 250;
      
     %% Labor resource
-    para.L = [5; 2.8];
-    para.H = [2;  1.2];
+    para.L = [50; 28];
+    para.H = [20;  12];
     para.Lt = repmat(para.L, 1, para.TT) ;
     para.Ht = repmat(para.H, 1, para.TT) ;
     

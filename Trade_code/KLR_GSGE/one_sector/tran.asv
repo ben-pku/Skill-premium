@@ -1,0 +1,4 @@
+function [p, Q, fl] = tran(pa)
+%% TRAN solve the 
+end
+

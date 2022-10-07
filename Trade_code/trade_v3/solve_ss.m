@@ -58,6 +58,7 @@ function [p, Q, para] = solve_ss(para)
             Q.L_m = para.L - Q.L_h - Q.L_l - Q.L_a;
             % 11 12
             Q.H_m = (1-para.beta2)*(1-para.v_m) ./(para.alpha2 * para.v_m) .* p.w_l./p.w_h .* Q.L_m;
+            Ym = p.w_h .* Q.H_m  ./( para.beta2 * p.p_m .* para.v_m  );
             
             
             %% update w_h

@@ -35,7 +35,8 @@ function [p] = ss_price(p, para)
         return
     end
     
-    % p_mh p_ms p_m p_lh p_l p_hh p_h
+    % p_a p_mh p_ms p_m p_lh p_l p_hh p_h
+    p.p_a = 1./para.A_a .* ( para.alpha1 * p.r.^(1-para.phi) + (1-para.alpha1) * p.w_l.^(1-para.phi) ).^(1/(1-para.phi));
     p.p_lh = ( para.alpha3* p.r .^(1-para.rho) +(1-para.alpha3)* p.w_h.^(1-para.rho) ).^( 1/(1-para.rho) )  ; 
     p.p_l = 1./para.A_l .* ( para.beta3 * p.p_lh.^(1-para.phi) + (1-para.beta3)* p.w_l.^(1-para.phi) ).^( 1./(1-para.phi) );
     p.p_hh = ( para.alpha4* p.r .^(1-para.rho) +(1-para.alpha4)* p.w_h.^(1-para.rho) ).^( 1/(1-para.rho) )  ; 
