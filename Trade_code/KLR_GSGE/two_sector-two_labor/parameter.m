@@ -1,24 +1,29 @@
-function [pa, y] = parameter(num , counterfactual)
+function [pa, y] = parameter(num , sec, counterfactual)
 %PARAMETER get the parameters
 
-    pa.num = num;
-    pa.T = 200;
+    pa.num = num; % num of countries
+    pa.sec = sec; % num of sectors
+    pa.T = 50;
     
     % production
-    pa.mu = 0.5;
-    pa.z = ones(pa.num, 1); % productivity
-    pa.z_h = ones(pa.num, pa.T+1);
+    pa.mu_K = [0.23 0.33];
+    pa.mu_L = [0.76  0.37];
+    pa.mu_H = [0.01 0.30];
+    pa.Te = [0.2 0.5; 0.2 0.5; 0.2 0.5] .* ones(pa.num, pa.sec); % tech
+    pa.Te_h = ones(pa.num, pa.sec, pa.T+1);
     pa.delta = 0.01;   % depreciate
+    pa.theta = 4 * ones(1, pa.sec); % trade elasticity
 
     % Household
-    pa.beta = 0.96; % discount factor
+    pa.beta = 0.96; % discount factor / year
+    pa.gamma = [0.5 0.5]; % expenditure share
+    % landlord
     pa.psi = 3; % IES
     pa.b = 1; % amenity
-    pa.b_h = ones(pa.num, pa.T);
+    pa.b_h = ones(pa.num, pa.T+1);
     
     % trade
-    pa.theta = 4; % trade e
-    pa.tau = 2 * ones(pa.num, pa.num); %trade cost
+    pa.tau = 1.5 * ones(pa.num, pa.num); %trade cost
     for i = 1: pa.num
         pa.tau(i,i) = 1;
     end
@@ -51,12 +56,17 @@ function [pa, y] = parameter(num , counterfactual)
 %         pa.kappa(:, :, t) = cumprod(pa.kappa_h, 3)(:,:, t) .* pa.kappa0;
 %     end
     % migration rate
-    pa.D = 0.7* eye(pa.num); % D t=0
+    pa.D_H = 0.7* eye(pa.num); % D t=0
     temp = (ones(pa.num, pa.num) - eye(pa.num)) * (0.3/(pa.num-1)) ;
-    pa.D = temp + pa.D;
+    pa.D_H = temp + pa.D_H;
+    
+    pa.D_L = 0.7* eye(pa.num); % D t=0
+    temp = (ones(pa.num, pa.num) - eye(pa.num)) * (0.3/(pa.num-1)) ;
+    pa.D_L = temp + pa.D_L;
     
     % population
-    pa.l = (linspace(6, 2, pa.num))' .* ones(pa.num, 1); % t=0
+    pa.L = (linspace(6, 2, pa.num))' .* ones(pa.num, 1); % t=0 L
+    pa.H = (linspace(0.1 , 0.5, pa.num))' .* ones(pa.num, 1); % t=0 H
     
    
     % capital

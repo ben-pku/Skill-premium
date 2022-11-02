@@ -95,11 +95,11 @@ replace low=1 if wage < (206/12/2) & year<=2000
 replace low=1 if wage < (865/12/2 ) & year<=2010 & year >2000
 replace low=1 if wage/cpi < (2300/12/563.5/2) & year>2010
 *reg 
-svy: reg lw college experience experience2 experience3 experience4 i.prov i.gender if( ((age>=16&age<=55& gender==0)|(age>=16&age<=60& gender==1))& urban==1 & low==0) 
+svy: reg lw college experience experience2 experience3 experience4 i.prov i.gender if( ((age>=16&age<=55& gender==0)|(age>=16&age<=60& gender==1))& urban==1 & low==0)
 gen sp2_c = _b[college]
-svy: reg lw ba experience experience2 experience3 experience4 i.prov i.gender if( ((age>=16&age<=55& gender==0)|(age>=16&age<=60& gender==1))& urban==1 & low==0) 
+svy: reg lw ba experience experience2 experience3 experience4 i.prov i.gender if( ((age>=16&age<=55& gender==0)|(age>=16&age<=60& gender==1))& urban==1 & low==0)
 gen sp2_b = _b[ba]
-svy: reg lw high experience experience2 experience3 experience4 i.prov i.gender if( ((age>=16&age<=55& gender==0)|(age>=16&age<=60& gender==1))& urban==1 & low==0) 
+svy: reg lw high experience experience2 experience3 experience4 i.prov i.gender if( ((age>=16&age<=55& gender==0)|(age>=16&age<=60& gender==1))& urban==1 & low==0)
 gen sp2_h = _b[high]
 
 save "C:\Users\Benjamin Hwang\Documents\大三_下\LijunZhu-project-2022\skill_premium_sc\data\skill_premium\cn_sp\CFPS\skillpremium_CFPS\sp_2018",replace
@@ -340,11 +340,11 @@ replace low=1 if wage < (206/12/2) & year<=2000
 replace low=1 if wage < (865/12/2 ) & year<=2010 & year >2000
 replace low=1 if wage/cpi < (2300/12/563.5/2) & year>2010
 drop if gender<0
-svy: reg lw college experience experience2 experience3 experience4 i.prov i.gender if( ((age>=16&age<=55& gender==0)|(age>=16&age<=60& gender==1))& urban==1 & low==0) 
+svy: reg lw college experience experience2 experience3 experience4 i.prov i.gender if( ((age>=16&age<=55& gender==0)|(age>=16&age<=60& gender==1))& urban==1 & low==0)
 gen sp2_c = _b[college]
-svy: reg lw ba experience experience2 experience3 experience4 i.prov i.gender if( ((age>=16&age<=55& gender==0)|(age>=16&age<=60& gender==1))& urban==1 & low==0) 
+svy: reg lw ba experience experience2 experience3 experience4 i.prov i.gender if( ((age>=16&age<=55& gender==0)|(age>=16&age<=60& gender==1))& urban==1 & low==0)
 gen sp2_b = _b[ba]
-svy: reg lw high experience experience2 experience3 experience4 i.prov i.gender if( ((age>=16&age<=55& gender==0)|(age>=16&age<=60& gender==1))& urban==1 & low==0) 
+svy: reg lw high experience experience2 experience3 experience4 i.prov i.gender if( ((age>=16&age<=55& gender==0)|(age>=16&age<=60& gender==1))& urban==1 & low==0)
 gen sp2_h = _b[high]
 
 save "C:\Users\Benjamin Hwang\Documents\大三_下\LijunZhu-project-2022\skill_premium_sc\data\skill_premium\cn_sp\CFPS\skillpremium_CFPS\sp_2014",replace
@@ -360,7 +360,7 @@ replace psu=75 if countyid==75 & psu==.
 replace psu=76 if countyid==76 & psu==.
 replace psu=77 if countyid==77 & psu==.
 replace psu=79 if countyid==79 & psu==.
-replace psu=87 if countyid==85 & psu==.  
+replace psu=87 if countyid==85 & psu==.
 replace psu=91 if countyid==88 & psu==.
 replace psu=96 if countyid==90 & psu==.
 

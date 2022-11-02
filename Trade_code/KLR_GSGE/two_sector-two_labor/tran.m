@@ -1,26 +1,24 @@
 function [p, Q, fl] = tran(pa)
 %% TRAN solve the transitional path
-% By Dynamic Exact hat algebra
+% By Semi-Dynamic Exact-hat algebra
 % p - price, Q - quantity, fl - flows
 % from t=0 to t = T+1
 
 % 1 guess the u_h , sigma
-Q.u_h = repmat( linspace(1.8, 1, pa.T+1), pa.num , 1);
-Q.sigma = (1-pa.beta)*ones(pa.num, pa.T+1);
+Q.u_Hh = repmat( logspace(0,log10(2.^pa.T),  pa.T+1 ), pa.num , 1);
+Q.u_Lh = repmat( logspace(0,log10(2.^pa.T),  pa.T+1 ), pa.num , 1);
+Q.sigma = (1-pa.beta)*ones(pa.num, pa.T+1); % t=0- T
 
 % create other variables
 p.R = [zeros(pa.num, pa.T)  1/pa.beta * ones(pa.num,1)];
-Q.chi =  zeros(pa.num, pa.T+1) ;  % we have to solve chi(t=1)
-Q.chi_h = ones(pa.num, pa.T+1);
-fl.D = zeros(pa.num, pa.num, pa.T+1);
-fl.D_h = zeros(pa.num , pa.num , pa.T+1);
+Q.k = [pa.k1 zeros(pa.num, pa.T)] ;  %k1 and kt
 
+fl.D_H = zeros(pa.num, pa.num, pa.T+1);
+fl.D_Hh = zeros(pa.num , pa.num , pa.T+1);
+fl.D_L = zeros(pa.num, pa.num, pa.T+1);
+fl.D_Lh = zeros(pa.num , pa.num , pa.T+1);
 
 p.p_h = zeros(pa.num, pa.T+1);
-
-
-
-
 
 flag = 1; % nonnegative value
 iter = 0;
@@ -29,49 +27,65 @@ dif = 10;
     while (iter <=1e4 && dif >1e-3 && flag)
         iter = iter + 1;
 
-        % 2 Set the rental rates in period t = 1
-        p.R(:, 1) = pa.k1./pa.k0 .* ( 1 - Q.sigma(:, 1) );
+        % 2 Set the rental rates in period t = 0
+        R0 = pa.k1./pa.k0 ./ ( 1 - Q.sigma(:, 1) );
 
         % 3 get migration rates
-        
-
+        % H and L
         for t = 0: pa.T
-            % solve fl.D_h and fl.D (t)
+            % solve fl.D_Hh and fl.D_H (t)
             if t ==0
-                numer = repmat( Q.u_h( :, t+2), 1, pa.num) ./ (pa.kappa_h(:, : , t+1).^(1/pa.rho)) ;
-                denom = sum(pa.D' .* numer , 1); % 1* pa.num
-                fl.D_h( :, :, t+1) =  ( numer./ repmat(denom, pa.num , 1) )';
-                fl.D(:, :, t+1) = fl.D_h( :, :, t+1) .* pa.D;
+                numer = repmat( Q.u_Hh( :, t+2), 1, pa.num) ./ (pa.kappa_h(:, : , t+1).^(1/pa.rho)) ;
+                denom = sum(pa.D_H' .* numer , 1); % 1* pa.num
+                fl.D_Hh( :, :, t+1) =  ( numer./ repmat(denom, pa.num , 1) )';
+                fl.D_H(:, :, t+1) = fl.D_Hh( :, :, t+1) .* pa.D_H;
+                
+                numer = repmat( Q.u_Lh( :, t+2), 1, pa.num) ./ (pa.kappa_h(:, : , t+1).^(1/pa.rho)) ;
+                denom = sum(pa.D_L' .* numer , 1); % 1* pa.num
+                fl.D_Lh( :, :, t+1) =  ( numer./ repmat(denom, pa.num , 1) )';
+                fl.D_L(:, :, t+1) = fl.D_Lh( :, :, t+1) .* pa.D_L;
             elseif t < pa.T
-                numer = repmat( Q.u_h( :, t+2), 1, pa.num) ./ pa.kappa_h(:, : , t+1).^(1/pa.rho);
-                denom = sum(fl.D( :, :, t)' .* numer , 1); % 1* pa.num
-                fl.D_h( :, :, t+1) =  ( numer./ repmat(denom, pa.num , 1) )';
-                fl.D(:, :, t+1) = fl.D_h( :, :, t+1) .* fl.D( :, :, t);
+                numer = repmat( Q.u_Hh( :, t+2), 1, pa.num) ./ pa.kappa_h(:, : , t+1).^(1/pa.rho);
+                denom = sum(fl.D_H( :, :, t)' .* numer , 1); % 1* pa.num
+                fl.D_Hh( :, :, t+1) =  ( numer./ repmat(denom, pa.num , 1) )';
+                fl.D_H(:, :, t+1) = fl.D_Hh( :, :, t+1) .* fl.D_H( :, :, t);
+                
+                numer = repmat( Q.u_Lh( :, t+2), 1, pa.num) ./ pa.kappa_h(:, : , t+1).^(1/pa.rho);
+                denom = sum(fl.D_L( :, :, t)' .* numer , 1); % 1* pa.num
+                fl.D_Lh( :, :, t+1) =  ( numer./ repmat(denom, pa.num , 1) )';
+                fl.D_L(:, :, t+1) = fl.D_Lh( :, :, t+1) .* fl.D_L( :, :, t);
             else 
                 numer = repmat( ones(pa.num,1), 1, pa.num) ./ pa.kappa_h(:, : , t+1).^(1/pa.rho);
-                denom = sum(fl.D( :, :, t)' .* numer , 1); % 1* pa.num
-                fl.D_h( :, :, t+1) =  ( numer./ repmat(denom, pa.num , 1) )';
-                fl.D(:, :, t+1) = fl.D_h( :, :, t+1) .* fl.D( :, :, t);                
+                denom = sum(fl.D_H( :, :, t)' .* numer , 1); % 1* pa.num
+                fl.D_Hh( :, :, t+1) =  ( numer./ repmat(denom, pa.num , 1) )';
+                fl.D_H(:, :, t+1) = fl.D_Hh( :, :, t+1) .* fl.D_H( :, :, t);           
+                
+                numer = repmat( ones(pa.num,1), 1, pa.num) ./ pa.kappa_h(:, : , t+1).^(1/pa.rho);
+                denom = sum(fl.D_L( :, :, t)' .* numer , 1); % 1* pa.num
+                fl.D_Lh( :, :, t+1) =  ( numer./ repmat(denom, pa.num , 1) )';
+                fl.D_L(:, :, t+1) = fl.D_Lh( :, :, t+1) .* fl.D_L( :, :, t);      
                     
             end
         end
 %         fl.D(: , :, pa.T+1) = fl.D(: , :, pa.T);
 
-        % 4 population
-        Q.l = zeros( pa.num, pa.T+1);
+        % 4 population H and L
+        Q.L = zeros( pa.num, pa.T+1);
+        Q.H = zeros( pa.num, pa.T+1);
         for  t = 0: pa.T
             if t == 0
-                Q.l(:, t+1) = (fl.D(:, :, t+1) )' * pa.l;
+                Q.L(:, t+1) = (fl.D_L(:, :, t+1) )' * pa.L;
+                Q.H(:, t+1) = (fl.D_H(:, :, t+1) )' * pa.H;
             else
-                Q.l(:, t+1) = (fl.D(: ,: , t+1) )' * Q.l(:, t);
+                Q.L(:, t+1) = (fl.D_L(: ,: , t+1) )' * Q.L(:, t);
+                Q.H(:, t+1) = (fl.D_H(: ,: , t+1) )' * Q.H(:, t);
             end
         end
-        l_lag = [ pa.l Q.l(:, 1:pa.T)] ; %[l0 l(1~T)]
-        Q.l_h = Q.l ./ l_lag ;
+        H_lag = [ pa.H Q.H(:, 1:pa.T)] ; %[H0 H(1~T)]
+        Q.H_h = Q.H ./ H_lag ;
+        L_lag = [ pa.L Q.L(:, 1:pa.T)] ; %[L0 L(1~T)]
+        Q.L_h = Q.L ./ L_lag ;
 
-        % edit chi chi_h
-        Q.chi(:, 1) = pa.k1 ./ Q.l(:, 1);
-        Q.chi_h(:, 1) = Q.chi(:, 1) ./ (pa.k0./pa.l) ;
 
         % 5 solve wage, trade flow, price, rental rate, capital labor ratio
         % solve w (absolute level, t=0) , given S0, l0
@@ -80,7 +94,8 @@ dif = 10;
             disp("Fail to solve the initial wage (t=0) \n");
             pause;
         end
-
+        
+        
         % 5 a  wage, trade flow
         p.w_h = ones(pa.num, pa.T+1); 
         fl.S = zeros(pa.num, pa.num, pa.T+1);
@@ -100,14 +115,8 @@ dif = 10;
             p.p_h(: , t+1) = (  sum( p_ele ,2)  ) .^(-1/pa.theta) ;
 
             % 5 c new rental rates R
-            if t == 0
-            % solve initial R 
-                p.r0 = (1-pa.mu)/pa.mu * p.w0 .* pa.l ./ pa.k0;
-                CDcons = ( (1-pa.mu)/pa.mu )^(1-pa.mu);
-                p_ele = ( CDcons * pa.tau .* repmat(  (p.w0 .* ( pa.k0./pa.l ).^(pa.mu-1)  ./pa.z )' ,pa.num, 1 ) ).^(-pa.theta) ;
-                p.p0 = ( sum( p_ele , 2)   ).^(-1/pa.theta) ;
-                p.R0 = 1 - pa.delta + p.r0 ./ p.p0 ;
-                p.R(:, t+1) = 1- pa.delta + p.w_h(: , t+1).*(p.R0-1+ pa.delta)./( p.p_h(:,t+1) .* Q.chi_h(:, t+1) );
+            if t == 1
+                p.R(:, t) = 1- pa.delta + p.r_h(:, t).*(R0-1+ pa.delta) ./ (   ); %%%%%%%%%%%
             else
                 p.R(:, t+1) = 1- pa.delta + p.w_h(: , t+1).*(p.R(:,t)-1+ pa.delta)./( p.p_h(:,t+1) .* Q.chi_h(:, t+1) );
             end
