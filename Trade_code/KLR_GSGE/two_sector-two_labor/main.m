@@ -9,7 +9,7 @@
 [p1, Q1, fl1] = tran(pa1); 
 
 % Counterfactual
-[pa2, state] = parameter(5, 1);
+[pa2, state] = parameter(3,2, 1);
 [p2, Q2, fl2] = tran(pa2); 
 
 

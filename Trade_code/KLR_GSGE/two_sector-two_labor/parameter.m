@@ -10,7 +10,8 @@ function [pa, y] = parameter(num , sec, counterfactual)
     pa.mu_L = [0.76  0.37];
     pa.mu_H = [0.01 0.30];
     pa.Te = [0.2 0.5; 0.2 0.5; 0.2 0.5] .* ones(pa.num, pa.sec); % tech
-    pa.Te_h = ones(pa.num, pa.sec, pa.T+1);
+    pa.Te_h1 = ones(pa.num, pa.T+1);
+    pa.Te_h2 = ones(pa.num, pa.T+1);
     pa.delta = 0.01;   % depreciate
     pa.theta = 4 * ones(1, pa.sec); % trade elasticity
 
@@ -23,26 +24,28 @@ function [pa, y] = parameter(num , sec, counterfactual)
     pa.b_h = ones(pa.num, pa.T+1);
     
     % trade
-    pa.tau = 1.5 * ones(pa.num, pa.num); %trade cost
+    pa.d = 1.5 * ones(pa.num, pa.num); %trade cost
     for i = 1: pa.num
-        pa.tau(i,i) = 1;
+        pa.d(i,i) = 1;
     end
-    pa.tau_h = ones(pa.num, pa.num, pa.T+1);
+    pa.d_h = ones(pa.num, pa.num, pa.T+1);
     
     %% counterfactual
     % if trade cost be declined by 25% at t = 30
     if counterfactual == 1
-        pa.tau_h(: , :, 30) = 0.75 *pa.tau_h(: , :, 30) ;
+        pa.d_h(: , :, 30) = 0.75 *pa.d_h(: , :, 30) ;
         for i = 1: pa.num
-            pa.tau_h(i,i,:) = 1;
+            pa.d_h(i,i,:) = 1;
         end
     end
     %%
     
     % initial trade share
-    pa.S = 0.8*eye(pa.num);
+    S = 0.8*eye(pa.num);
     temp = (ones(pa.num, pa.num) - eye(pa.num)) * (0.2/(pa.num-1)) ;
-    pa.S = temp + pa.S;
+    S = temp + S;
+    pa.S1 = S; %sector 1
+    pa.S2 = S; %sector 2
     
     % migration
     pa.rho = 1;
