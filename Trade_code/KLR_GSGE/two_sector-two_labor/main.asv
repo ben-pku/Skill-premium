@@ -7,10 +7,16 @@
 %% transition path
 
 % tic;
-% [pa0, state] = parameter(3, 2, 0);
-% [p0, Q0, fl0] = tran(pa0); 
+% [pa1, state] = para1(3, 2, 0);
+% [p1, Q1, fl1] = tran(pa1); 
 % toc;
 
+
+%
+
+% Counterfactual
+% [pa2, state] = parameter(3,2, 1);
+% [p2, Q2, fl2] = tran(pa2); 
 
 % Counterfactual without capital accumulation
 [pa2, state] = parameter(3,2, 2);

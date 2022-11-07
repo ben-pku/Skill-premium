@@ -23,7 +23,7 @@ function [p, Q, fl] = tran(  pa )
     flag = 1; % nonnegative value
     iter = 0;
     dif = 10;
-    tol = 1e-7;
+    tol = 1e-4;
     while (iter <=1e4 && dif >tol && flag)
         iter = iter + 1;
         
@@ -150,15 +150,9 @@ function [p, Q, fl] = tran(  pa )
         zw3 = Q.sigma - newsigma;
         adj1 = Q.u_Hh .* (1 + vfactor*zw1./Q.u_Hh );
         adj2 = Q.u_Lh .* (1 + vfactor*zw2./Q.u_Lh );
-        adj3 = Q.sigma .* (1 + vfactor*zw3 ./ Q.sigma);
-        dif1 =  max((Q.u_Hh - adj1).^2);
-        dif2 =  max((Q.u_Lh - adj2).^2);
-        dif3 =  max((Q.sigma - adj3).^2);
-        dif = max([ dif1 dif2 dif3 ]  );
         
-        Q.u_Hh = adj1;
-        Q.u_Lh = adj2;
-        Q.sigma = adj3;
+
+
 %         difu_H = max( abs(newu_Hh - Q.u_Hh)./Q.u_Hh   ) ;  %
 %         difu_L = max( abs(newu_Lh - Q.u_Lh)./Q.u_Lh  ) ;  %
 %         difs = max( abs(newsigma - Q.sigma)./Q.sigma ); % 

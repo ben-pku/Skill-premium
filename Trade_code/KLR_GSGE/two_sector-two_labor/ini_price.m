@@ -15,7 +15,7 @@ function p = ini_price(p, pa, iter0)
     iter = 0;
     dif = 10;
     tol =1e-7;
-    while dif >tol
+    while dif >tol && iter < 1e4
         iter = iter +1;
         X1 = pa.gamma(1,1) * (p.w_H0 .* pa.H + p.w_L0 .* pa.L + p.r0.* pa.k0) ;
         X2 = pa.gamma(1,2) * (p.w_H0 .* pa.H + p.w_L0 .* pa.L + p.r0.* pa.k0) ;
@@ -31,10 +31,17 @@ function p = ini_price(p, pa, iter0)
         nr0 = ( pa.mu_K(1,1) * ( sum( pa.S1 .* repmat(X1,1, pa.num), 1 ))'  + ...
             pa.mu_K(1,2) * ( sum( pa.S2 .* repmat(X2, 1, pa.num) , 1  ))' ) ...
             ./ pa.k0;
+        
+        % numeraire
+        numer = nw_H0(1);
+        nw_H0 = nw_H0 /numer;
+        nw_L0 = nw_L0/numer;
+        nr0 = nr0 /numer;
      
-        difw_H = max( abs(  (p.w_H0- nw_H0)./p.w_H0 ) ) ;
-        difw_L = max( abs( (p.w_L0- nw_L0)./p.w_L0 ) ) ;
-        difr = max( abs( (p.r0- nr0)./p.r0 ) ) ;
+        % update
+        difw_H = max( abs(  (p.w_H0- nw_H0) ) ) ;
+        difw_L = max( abs( (p.w_L0- nw_L0) ) ) ;
+        difr = max( abs( (p.r0- nr0)) ) ;
         dif = max([difw_H, difw_L, difr] );
         
         smooth = 1;% .9 + rand * .1;

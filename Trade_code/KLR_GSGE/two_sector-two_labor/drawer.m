@@ -4,47 +4,63 @@ function y = drawer(p, Q, fl, pa, cf)
 
  
 f1 = figure(1);
-plot(1:pa.T+1, p.w_h./p.p_h );
- if cf ==1
+plot(1:pa.T+1, p.w_Hh./p.w_Lh );
+
      xline(30, ':r');
- end
-title("Real wage hat");
+     %xline(70, ':r');
+
+title("Skill premium");
 xlabel("time");
+legend('CN rural','CN urban','ROW');
 
 f2 = figure(2);
 plot(1:pa.T+1, p.R);
- if cf ==1
+
      xline(30, ':r');
- end
-title("return to capital");
+
+title("Gross return to capital");
 xlabel("time");
+legend('CN rural','CN urban','ROW');
 
 f3 = figure(3);
-plot(1:pa.T+1, Q.chi);
- if cf ==1
+plot(1:pa.T+1, Q.k);
+
      xline(30, ':r');
- end
-title(" capital per person");
+
+title("Capital");
 xlabel("time");
+legend('CN rural','CN urban','ROW');
 
 f4 = figure(4);
-plot(1: pa.T+1, Q.l);
- if cf ==1
-     xline(30, ':r');
- end
-title(" population");
-xlabel("time");
+plot(1: pa.T+1, Q.H);
 
-if cf == 1
-    print(f1, './figure/realwage-c.eps', '-depsc');
-    print(f2, './figure/R-c.eps', '-depsc');
-    print(f3, './figure/kperson-c.eps', '-depsc');
-    print(f4, './figure/pop-c.eps', '-depsc');
-else
-    print(f1, './figure/realwage.eps', '-depsc');
+     xline(30, ':r');
+
+title("Skilled labor");
+xlabel("time");
+legend('CN rural','CN urban','ROW');
+
+f5 = figure(5);
+plot(1: pa.T+1, Q.L);
+
+     xline(30, ':r');
+
+title("Unskilled labor");
+xlabel("time");
+legend('CN rural','CN urban','ROW');
+
+if cf ==0
+    print(f1, './figure/skillpremium.eps', '-depsc');
     print(f2, './figure/R.eps', '-depsc');
-    print(f3, './figure/kperson.eps', '-depsc');
-    print(f4, './figure/pop.eps', '-depsc');
+    print(f3, './figure/k.eps', '-depsc');
+    print(f4, './figure/H.eps', '-depsc');
+    print(f5, './figure/L.eps', '-depsc');
+elseif cf==2
+    print(f1, './figure/skillpremium-c.eps', '-depsc');
+    print(f2, './figure/R-c.eps', '-depsc');
+    print(f3, './figure/k-c.eps', '-depsc');
+    print(f4, './figure/H-c.eps', '-depsc');
+    print(f5, './figure/L-c.eps', '-depsc');
 end
 
 y =1;

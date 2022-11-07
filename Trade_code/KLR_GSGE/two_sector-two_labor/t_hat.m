@@ -21,7 +21,9 @@ function [p, Q, fl] = t_hat(p, Q, fl, t,  pa)
     p.p_h1(:, t) = sum(numer1, 2 ) .^ (-1/pa.theta(1)) ;
     fl.S1(:,:, t) = numer1 ./ (p.p_h1(:,t).^(-pa.theta(1)));
     p.p_h2(:, t) = sum(numer2, 2 ) .^ (-1/pa.theta(2)) ;
-    fl.S2(:,:, t) = numer2 ./ (p.p_h2(:,t).^(-pa.theta(2)) );   
+    fl.S2(:,:, t) = numer2 ./ (p.p_h2(:,t).^(-pa.theta(2)) );
     
+    
+
 end
 

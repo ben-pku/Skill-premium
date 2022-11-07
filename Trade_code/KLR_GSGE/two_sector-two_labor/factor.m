@@ -1,0 +1,79 @@
+function new = factor(p, Q, fl, t, pa)
+%% FACTOR update new factor prices
+% factor market clearing condition
+%  find updated wage, and then recover the factor price_h
+% we just change the p temporarily, we will store it as another variable in
+% temp_e
+    tol = 1e-7;
+    dif = 10;
+%     iter = 0;
+%     
+%     while dif >tol && iter < 1e4
+%         iter = iter + 1;
+        if t ==1 
+            X1 = pa.gamma(1) * ( p.w_Hh(:, t).*p.w_H0.* Q.H(:, t) + p.w_Lh(:,t).* p.w_L0 .* Q.L(:, t) ...
+                + p.r_h(:,t) .* p.r0 .* Q.k(:, t) );
+            X2 = pa.gamma(2) * ( p.w_Hh(:, t).*p.w_H0.* Q.H(:, t) + p.w_Lh(:,t).* p.w_L0 .* Q.L(:, t) ...
+                + p.r_h(:,t) .* p.r0 .* Q.k(:, t) );     
+        else
+            X1 = pa.gamma(1) * ( p.w_Hh(:, t).*p.w_H(: ,t-1).* Q.H(:, t) + p.w_Lh(:,t).* p.w_L(:, t-1) .* Q.L(:, t)...
+                + p.r_h(:,t) .* p.r(:, t-1) .* Q.k(:, t) );
+            X2 = pa.gamma(2) * ( p.w_Hh(:, t).*p.w_H(: ,t-1).* Q.H(:, t) + p.w_Lh(:,t).* p.w_L(:, t-1) .* Q.L(:, t)...
+                + p.r_h(:,t) .* p.r(:, t-1) .* Q.k(:, t) );
+        end
+
+
+        if t == 1
+            new.w_Hh =( pa.mu_H(1) *  (sum(fl.S1(:,:,t) .* repmat( X1, 1, pa.num  ), 1 ) )'    ...
+                + pa.mu_H(2) *   (sum(fl.S2(:,:,t) .* repmat( X2, 1, pa.num  ), 1 ) )' ) ...
+                ./ ( p.w_H0 .* Q.H(:, t)   ); 
+            new.w_Lh = ( pa.mu_L(1) *  (sum(fl.S1(:,:,t) .* repmat( X1, 1, pa.num  ), 1 ) )'    ...
+                + pa.mu_L(2) *   (sum(fl.S2(:,:,t) .* repmat( X2, 1, pa.num  ), 1 ) )' ) ...
+                ./ ( p.w_L0 .* Q.L(:, t)   );
+            new.r_h = ( pa.mu_K(1) *  (sum(fl.S1(:,:,t) .* repmat( X1, 1, pa.num  ), 1 ) )'    ...
+                + pa.mu_K(2) *   (sum(fl.S2(:,:,t) .* repmat( X2, 1, pa.num  ), 1 ) )') ...
+                ./ ( p.r0 .* Q.k(:, t)   );
+        else 
+            new.w_Hh =( pa.mu_H(1) *  (sum(fl.S1(:,:,t) .* repmat( X1, 1, pa.num  ), 1 ) )'    ...
+                + pa.mu_H(2) *   (sum(fl.S2(:,:,t) .* repmat( X2, 1, pa.num  ), 1 ) )' ) ...
+                ./ ( p.w_H(:, t-1) .* Q.H(:, t)   ); 
+            new.w_Lh = ( pa.mu_L(1) *  (sum(fl.S1(:,:,t) .* repmat( X1, 1, pa.num  ), 1 ) )'    ...
+                + pa.mu_L(2) *   (sum(fl.S2(:,:,t) .* repmat( X2, 1, pa.num  ), 1 ) )' ) ...
+                ./ ( p.w_L(:, t-1) .* Q.L(:, t)   );
+            new.r_h = ( pa.mu_K(1) *  (sum(fl.S1(:,:,t) .* repmat( X1, 1, pa.num  ), 1 ) )'    ...
+                + pa.mu_K(2) *   (sum(fl.S2(:,:,t) .* repmat( X2, 1, pa.num  ), 1 ) )') ...
+                ./ ( p.r(:, t-1) .* Q.k(:, t)   );
+        end
+% 
+%         numeraire = new.w_Hh(1);
+%         new.w_Hh = new.w_Hh/ numeraire;
+%         new.w_Lh = new.w_Lh/ numeraire;
+%         new.r_h = new.r_h/ numeraire;
+% 
+% % update the factor prices
+%         difw_Hh = max( ( 1 - new.w_Hh./p.w_Hh(:, t)  ) .^2  );
+%         difw_Lh = max( ( 1- new.w_Lh ./p.w_Lh(:, t)   ) .^2  );
+%         difr_h = max( (1- new.r_h ./ p.r_h(:, t)  ) .^2  );
+%         dif = max( [ difw_Hh difw_Lh difr_h ]);
+%         smooth = 0.9 + 0.1 * rand;
+%         p.w_Hh(:, t) = (1-smooth) * p.w_Hh(:, t) + smooth * new.w_Hh;
+%         p.w_Lh(:, t) = (1-smooth) * p.w_Lh(:, t) + smooth * new.w_Lh;
+%         p.r_h(:, t) = (1-smooth) * p.r_h(:, t) + smooth * new.r_h;
+        
+    
+%     end    
+        
+%     if (sum(p.w_Hh(:, t)<0) | sum(p.w_Lh(:, t)<0) | sum(p.r_h(:, t) <0) ) 
+%         disp("factor.m Fail to solve the time-t equilibrium factor price (t) \n");
+%         pause;
+%     end
+%     
+%     if iter==1e4
+%         disp("factor.m Fail to solve the time-t equilibrium factor price (t) -- reach max iter\n");
+%         pause;
+%     end
+    
+    
+    
+end
+
