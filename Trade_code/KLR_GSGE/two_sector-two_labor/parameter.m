@@ -6,7 +6,7 @@ function [pa, y] = parameter(num , sec, counterfactual)
     pa.T = 200;
     
     % production 
-    pa.mu_K = [0.13 0.33]; % capital share
+    pa.mu_K = [0.13 0.33]; % capital sharep
     pa.mu_L = [0.8699  0.37]; % unskilled labor share
     pa.mu_H = [0.0001 0.30]; % skilled labor share
     pa.Te = [0.2 0.5; 0.2 0.5; 0.2 0.5] .* ones(pa.num, pa.sec); % technology
@@ -51,6 +51,8 @@ function [pa, y] = parameter(num , sec, counterfactual)
             pa.d_h(i,i,:) = ones(1,1,pa.T+1);
         end
     end
+    
+    
     %%
     
     % initial trade share
