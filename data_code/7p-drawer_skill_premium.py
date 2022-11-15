@@ -6,11 +6,83 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 import seaborn as sns
 
+# My estimation
+plt.rcParams['figure.figsize'] = (15, 4.8)
+cn_sp = pd.read_stata('C:/Users/Benjamin Hwang/Documents/大三_下/LijunZhu-project-2022/skill_premium_sc/data/skill_premium/cn_sp/cn-sp-1986-2020.dta')
+year2 = np.asarray(cn_sp['year']) # UHS
+cn_sp_b = np.asarray(cn_sp['sp_b'])
+cn_sp_c = np.asarray(cn_sp['sp_c'])
+cn_sp_h = np.asarray(cn_sp['sp_h'])
+c2 = cn_sp[['year','sp2_b']]
+c2 = c2.dropna(axis=0)
+year_2 = np.asarray(c2['year'])
+cn_sp2_b =np.asarray(c2['sp2_b']) # CFPS
+b = np.polyfit(year_2,cn_sp2_b,1)
+sp2_b = np.poly1d(b)
+sp2_b = sp2_b(year_2)
+
+fig, an = plt.subplots()
+an.plot(year2, cn_sp_b, marker='o',linewidth=1.5, markersize=5.5, label='UHS')
+an.plot(year_2, cn_sp2_b, marker='o',linewidth=1.5, markersize=5.5, color='xkcd:tan', label='CFPS')
+an.plot(year_2,sp2_b, ls='--', color='xkcd:medium blue',label='linear fit')
+an.set_xlabel('year')
+an.set_ylabel('Skill premium (log wage)')
+an.spines['top'].set_visible(False)
+an.spines['right'].set_visible(False)
+an.set_title('China Skill Premium 1986-2020')
+an.legend()
+plt.show()
+
+# my estimation and adjustment with CFPS
+plt.rcParams['figure.figsize'] = (15, 4.8)
+c3 = cn_sp[['year','sp2_ba','sp2_ca','sp2_ha']]
+c3 = c3.dropna(axis=0)
+year_3 = np.asarray(c3['year'])
+sp2_ba = np.asarray(c3['sp2_ba'])
+sp2_ca = np.asarray(c3['sp2_ca'])
+sp2_ha = np.asarray(c3['sp2_ha'])
+
+fig, an1 = plt.subplots()
+an1.plot(year2, cn_sp_b, marker='o',linewidth=1.5, markersize=5.5, color='xkcd:azure', label='Bachelor, UHS')
+an1.plot(year_3, sp2_ba, marker='o',linewidth=1.5, markersize=5.5, color='xkcd:azure', label='Bachelor, CFPS adjusted')
+an1.plot(year2, cn_sp_c, marker='o',linewidth=1.5, markersize=5.5, color='xkcd:grass green', label='College, UHS')
+an1.plot(year_3, sp2_ca, marker='o',linewidth=1.5, markersize=5.5, color='xkcd:grass green', label='College, CFPS adjusted')
+an1.plot(year2, cn_sp_h, marker='o',linewidth=1.5, markersize=5.5, color='xkcd:tan', label='High school, UHS')
+an1.plot(year_3, sp2_ha, marker='o',linewidth=1.5, markersize=5.5, color='xkcd:tan', label='High school, CFPS adjusted')
+
+an1.set_xlabel('year')
+an1.set_ylabel('Skill premium (log wage)')
+an1.spines['top'].set_visible(False)
+an1.spines['right'].set_visible(False)
+an1.set_title('China Skill Premium 1986-2020')
+an1.legend()
+plt.show()
+
+# my estimation and adjustment with CFPS, College level
+plt.rcParams['figure.figsize'] = (15, 4.8)
+c = np.polyfit(year_3,sp2_ca,1)
+sp2_cafit = np.poly1d(c)
+sp2_cafit = sp2_cafit(year_3)
+fig, an2 = plt.subplots()
+an2.plot(year2, cn_sp_c, marker='o',linewidth=1.5, markersize=5.5, color='xkcd:grey', label='UHS')
+an2.plot(year_3, sp2_ca, marker='^',linewidth=1.5, markersize=5.5, color='xkcd:grey', label='CFPS')
+#an2.plot(year_3, sp2_cafit, ls='--', color='xkcd:medium blue',label='linear fit')
+an2.set_xlabel('year')
+an2.set_ylabel('Skill premium (log wage)')
+an2.spines['top'].set_visible(False)
+an2.spines['right'].set_visible(False)
+an2.grid(False)
+an2.set_title('China Skill Premium 1986-2020')
+an2.legend()
+plt.show()
+
+'''
 ## review the plot of Chong'en Bai
 bai_sp = pd.read_stata('C:/Users/Benjamin Hwang/Documents/大三_下/LijunZhu-project-2022/skill_premium_sc/data/skill_premium/cn_sp/UHS/sp_uhs_panel/BaiJDE-ZhangJIE.dta')
 year = np.asarray(bai_sp['year']) # all year UHS
 sph = np.asarray(bai_sp['sph'])
 spc = np.asarray(bai_sp['spc'])
+'''
 '''
 fig, ax = plt.subplots()
 ax.plot(year, spc, marker='o',linewidth=1.5, markersize=5.5, label='College')
@@ -20,6 +92,8 @@ ax.set_xlabel('Year')
 plt.legend()
 plt.grid()
 plt.show() 
+'''
+
 '''
 bai_sp1 = pd.read_stata('C:/Users/Benjamin Hwang/Documents/大三_下/LijunZhu-project-2022/skill_premium_sc/data/skill_premium/cn_sp/UHS/sp_uhs_panel/BaiJDE00-12.dta')
 year1 = np.asarray(bai_sp1['year'])  # 2000-2012
@@ -150,3 +224,5 @@ co.spines['right'].set_visible(False)
 co.grid()
 co.legend()
 plt.show()
+
+'''

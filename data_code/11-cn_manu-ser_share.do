@@ -73,16 +73,18 @@ gen serh = ser_s5+ser_s6
 gen serl = ser_s1 + ser_s2+ser_s3+ser_s4
 * service high-skill vs low-skill
 twoway (line serh year) (line serl year), graphregion(color(white)) title("Service Employment Share, China") legend(label(1 "high skill") label(2 "low skill")) //
-
+*/
 twoway (line manu_s year) (line agri_s year) (line con_s year ) // 这个结果不是很对，农业人口占比没有这么低
 save cn_service78-20, replace
 * construction and mining sector trend:
 use cn_service78-20,clear
+gen min_s = mining / total
+gen con_s = construction / total
 twoway (line con_s year) (line min_s year), graphregion(color(white)) title("Construction and Mining Employment Share, China") legend(label(1 "Construction") label(2 "Mining")) xtitle("year") ytitle("employment share")
 
 *-- analyze the weird trend of service sectors
 use cn_service78-20, clear
-twoway (line ser_s1 year) (line ser_s2 year) (line ser_s3 year) (line ser_s4 year) (line ser_s5 year) (line ser_s6 year)   */ 
+twoway (line ser_s1 year) (line ser_s2 year) (line ser_s3 year) (line ser_s4 year) (line ser_s5 year) (line ser_s6 year)    
 
 
 
@@ -114,14 +116,22 @@ gen emp_s = emp/t_emp/10000
 label var emp_s "industry employment share"
 
 use cn_manu77-20, clear
-twoway (line emp_s year if isic~="D"), by(isic, yrescale) ylabel(none)
+twoway (line emp_s year if isic~="D"), by(isic, yrescale ) ylabel(none) scheme(s1mono)
 
 replace increase = (isic=="24"| isic=="30"| isic=="31"| isic=="32"| isic=="33"| isic=="34"| isic=="36"| isic=="37")
 twoway (line emp_s year if isic~="D"& increase==0), by(isic, yrescale) ylabel(none)
-twoway (line emp_s year if isic~="D"& increase==1), by(isic, yrescale) ylabel(none)
+twoway (line emp_s year if isic~="D"& increase==1), by(isic, yrescale) scheme(s1mono)
 
 line emp_s year if isic=="D"
 save cn_manu77-20,replace
+
+use cn_manu77-20,clear
+drop if isic=="D"
+collapse (sum) emp (mean) t_emp, by(year increase)
+gen emp_s = emp/t_emp/10000
+twoway (line emp_s year if increase==1) (line emp_s year if increase==0), legend(label(1 "increase") label(2 "de"))
+
+
 
 ****** 中国经济普查年鉴 2004 2008 2013 2018
 * focus on service
@@ -174,3 +184,6 @@ replace emp = emp*100 if year<=2000
 twoway (line emp_s year if serh==0) (line emp_s year if serh==1), title("Employment Share of Service Sectors, China") legend(label(1 "Low skill") label(2 "High skill")) graphregion(color(white)) ytitle("employment share") xtitle("year")
 
 save "ser_emp_census82-18.dta",replace
+drop if serh==-1
+reshape wide emp emp_s ,i(year) j(serh)
+save "ser_emp_census82-18d.dta", replace

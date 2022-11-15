@@ -4,15 +4,14 @@ function y = drawer(p, Q, fl, pa, cf)
 
  
 f1 = figure(1);
-sp = [ p.w_H0(1)/p.w_L0(1) p.w_H(2, :)./p.w_L(2, :) ];
-plot(1:pa.T+2, sp );
+plot(1:pa.T+1, p.w_Hh./p.w_Lh );
 
      xline(30, ':r');
      %xline(70, ':r');
 
-ylabel("Skill premium in China");
+title("Skill premium");
 xlabel("time");
-%legend('CN urban');
+legend('CN rural','CN urban','ROW');
 
 f2 = figure(2);
 plot(1:pa.T+1, p.R);
@@ -21,7 +20,7 @@ plot(1:pa.T+1, p.R);
 
 title("Gross return to capital");
 xlabel("time");
-legend('CN rural','CN urban','NA');
+legend('CN rural','CN urban','ROW');
 
 f3 = figure(3);
 plot(1:pa.T+1, Q.k);
@@ -30,7 +29,7 @@ plot(1:pa.T+1, Q.k);
 
 title("Capital");
 xlabel("time");
-legend('CN rural','CN urban','NA');
+legend('CN rural','CN urban','ROW');
 
 f4 = figure(4);
 plot(1: pa.T+1, Q.H);
@@ -39,17 +38,16 @@ plot(1: pa.T+1, Q.H);
 
 title("Skilled labor");
 xlabel("time");
-legend('CN rural','CN urban','NA');
+legend('CN rural','CN urban','ROW');
 
 f5 = figure(5);
-L = [pa.L(1:2) Q.L(1:2, :) ];
-plot(1: pa.T+2, L);
+plot(1: pa.T+1, Q.L);
 
      xline(30, ':r');
 
-ylabel("Unskilled labor");
+title("Unskilled labor");
 xlabel("time");
-legend('CN rural','CN urban');
+legend('CN rural','CN urban','ROW');
 
 if cf ==0
     print(f1, './figure/skillpremium.eps', '-depsc');

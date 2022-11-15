@@ -13,19 +13,19 @@ function [pa, y] = parameter(num , sec, counterfactual)
     pa.Te_h1 = ones(pa.num, pa.T+1); % technical change in sector 1
     pa.Te_h2 = ones(pa.num, pa.T+1); % technical change in sector 2
     pa.Te_h3 = ones(pa.num, pa.T+1); % technical change in sector 2
-    pa.delta = 0.01;   % depreciate rate
+    pa.delta = 0.06;   % depreciate rate
     % counterfactual: if without capital accumulation
     if counterfactual == 2  
         pa.delta = 1; 
     end
     
-    pa.theta = [8, 4, 4] .* ones(1, pa.sec); % trade elasticity
+    pa.theta = [6, 4, 4] .* ones(1, pa.sec); % trade elasticity
 
     % Household
     pa.beta = 0.96; % discount factor / year
     pa.gamma = [0.2 0.55 0.25]; % expenditure share
     % landlord
-    pa.psi = 4; % IES
+    pa.psi = 0.5; % IES
     pa.b = 1; % amenity (useless)
     pa.b_h = ones(pa.num, pa.T+1);
     
@@ -92,7 +92,7 @@ function [pa, y] = parameter(num , sec, counterfactual)
                
     
     % migration
-    pa.rho = 5.3436;  % as for Caliendo Paroo 2019
+    pa.rho = 2.02;  % as for Caliendo Paroo 2019
 %     pa.kappa0 = [ 1 100 999;
 %                           100 1 999;
 %                           999 999 1]; %migration cost t=0

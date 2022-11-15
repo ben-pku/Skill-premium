@@ -139,6 +139,11 @@ drop _merge
 
 sort year
 save cn_emp1952-2020,replace
+use cn_emp1952-2020, clear
+drop if year<1978
+replace serh_s = 100 * serh_s
+replace serl_s = 100 * serl_s
+save cn_emp1978-2020,replace
 
 * employment share
 twoway (line A_s year) (line I_s year) (line serh_s year) (line serl_s year), graphregion(color(white)) title("China Three Main Industries Value Added Share") ytitle("Employment Share")

@@ -1,0 +1,29 @@
+function [p, Q, fl, new] = t_hat(p, Q, fl, t,  pa)
+%T_HAT given (t-1), guessed factor prices, and want to solve uc_h, p_h, S (t)
+%  
+    % unit cost
+    p.uc_h1(:, t) = p.r_h(:, t).^pa.mu_K(1) .* p.w_Lh(:, t).^pa.mu_L(1) .* p.p1_h(:, t).^pa.mu_m1(1) .* p.p2_h(:, t).^pa.mu_m2(1);
+    p.uc_h2(:, t) = p.r_h(:, t).^pa.mu_K(2) .* p.w_Lh(:, t).^pa.mu_L(2) .* p.p1_h(:, t).^pa.mu_m1(2) .* p.p2_h(:, t).^pa.mu_m2(2);
+    
+    % sector goods price, trade flow
+    if t==1
+        numer1 = pa.S1 .* repmat( (pa.Te_h1(: , t))', pa.num, 1 ) .* ...
+            (  repmat( (p.uc_h1(:, t))', pa.num, 1) .* pa.d_h(:,:, t)  ).^(-pa.theta(1) ); 
+        numer2 = pa.S2 .* repmat( (pa.Te_h2(: , t))', pa.num, 1 ) .* ...
+            (  repmat( (p.uc_h2(:, t))', pa.num, 1) .* pa.d_h(:,:, t)  ).^(-pa.theta(2) );         
+    else
+        numer1 = fl.S1(:,:, t-1) .* repmat( (pa.Te_h1(: , t))', pa.num, 1 ) .* ...
+            (  repmat( (p.uc_h1(:, t))', pa.num, 1) .* pa.d_h(:,:, t)  ).^(-pa.theta(1) ); 
+        numer2 = fl.S2(:,:, t-1) .* repmat( (pa.Te_h2(: , t))', pa.num, 1 ) .* ...
+            (  repmat( (p.uc_h2(:, t))', pa.num, 1) .* pa.d_h(:,:, t)  ).^(-pa.theta(2) ); 
+    end
+    
+    new.p1_h = sum(numer1, 2 ) .^ (-1/pa.theta(1)) ;
+    fl.S1(:,:, t) = numer1 ./ (p.p1_h(:,t).^(-pa.theta(1)));
+    new.p2_h = sum(numer2, 2 ) .^ (-1/pa.theta(2)) ;
+    fl.S2(:,:, t) = numer2 ./ (p.p2_h(:,t).^(-pa.theta(2)) );
+    
+    
+
+end
+
