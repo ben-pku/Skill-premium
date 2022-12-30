@@ -54,6 +54,78 @@ replace ba = (edattain==4)
 replace college = (edattaind>=312 & edattaind~=999)
 collapse secondary college ba [fweight=dayswrk], by(indgen)
 
+*************************************************************************
+************************ CN Skill intensity *****************************
+*************************************************************************
+* industrial enterprise dataset 2004
+use "C:\Users\Benjamin Hwang\Documents\undergraduate_research-2021-Zhengwen_Liu\data\工业企业面板数据\all_year\all_year_original\c2004.dta", clear
+
+rename 企业匹配唯一标识码 id
+rename 企业名称 name
+rename 行业小类代码 ind4
+rename 行业大类代码 ind2
+rename 行业大类名称 ind2_name
+rename 行业中类代码 ind3
+rename 年末从业人员合计_男性人 male
+rename 年末从业人员合计_女性人 female
+rename 具有研究生及以上学历人员_男性人 grad_m
+rename 具有研究生及以上学历人员_女性人 grad_f
+rename 具有大学本科学历人员_男性人 ba_m
+rename 具有大学本科学历人员_女性人 ba_f
+rename 具有大专学历人员_男性人 college_m
+rename 具有大专学历人员_女性人 college_f
+rename 具有高中学历人员_男性人 high_m
+rename 具有高中学历人员_女性人 high_f
+rename 具有初中及以下学历人员_男性人 middle_m
+rename 具有初中及以下学历人员_女性人 middle_f
+rename 具有高级技术职称人员_男性人 highskill_m
+rename 具有高级技术职称人员_女性人 highskill_f
+rename 具有中级技术职称人员_男性人 midskill_m
+rename 具有中级技术职称人员_女性人 midskill_f 
+rename 具有初级技术职称人员_男性人 primskill_m
+rename 具有初级技术职称人员_女性人 primskill_f
+rename 高级技师_男性人 hightechnician_m
+rename 高级技师_女性人 hightechnician_f
+rename 技师_男性人 technician_m
+rename 技师_女性人 technician_f
+rename 高级工_男性人 highwk_m
+rename 高级工_女性人 highwk_f
+rename 中级工_男性人 midwk_m
+rename 中级工_女性人 midwk_f
+
+destring male female grad* ba* college* high* mid* pri* tech* ,replace
+
+collapse (sum)male female college_m college_f high_m high_f middle_m middle_f ,by(ind2 ind2_name)
+gen emp = male + female
+label variable emp "total employment"
+gen college_i = (college_f+college_m)/emp
+gen high_i = (high_f + high_m)/emp
+gen middle_i = (middle_f + middle_m)/emp
+
+gsort -college_i
+
+drop if ind2=="06"|ind2=="07"|ind2=="08"|ind2=="09"|ind2=="10"|ind2=="11"|ind2=="43"|ind2=="44"|ind2=="45"|ind2=="46"
+sort ind2
+gen rank = _n
+order ind2 ind2_name rank college_i high_i middle_i 
+gsort -high_i
+gen rank_h = _n
+order ind2 ind2_name rank_h rank college_i high_i middle_i 
+
+/*
+rename 企业匹配唯一标识码 id
+rename 企业名称 name
+rename 行业小类代码 ind4
+rename 行业大类代码 ind2
+rename 行业大类名称 ind2_name
+rename 行业中类代码 ind3
+rename 全部从业人员年平均人数人 emp
+destring emp,replace
+collapse (sum) emp, by(ind2_name ind2 )
+egen t_emp = sum(emp)
+sort ind2*/
+
+//06 - 11,43-46 not manufacturing
 
 *************************************************************************
 ************************ US Skill intensity *****************************
@@ -138,3 +210,6 @@ egen b_wage = sum(ia) if ba == 1
 gen h_share = h_wage/t_wage
 gen c_share = c_wage/t_wage
 gen b_share = b_wage/t_wage
+
+
+

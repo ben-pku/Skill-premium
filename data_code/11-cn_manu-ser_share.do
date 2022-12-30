@@ -110,26 +110,32 @@ keep year isic value employ
 rename value emp
 rename employ t_emp
 label variable emp "industry employment"
-label variable t_emp "total employment"
+label variable t_emp "total employment in China"
 
 gen emp_s = emp/t_emp/10000
 label var emp_s "industry employment share"
 
 use cn_manu77-20, clear
+drop if isic=="D"
+//drop if year < 1990
 twoway (line emp_s year if isic~="D"), by(isic, yrescale ) ylabel(none) scheme(s1mono)
 
-replace increase = (isic=="24"| isic=="30"| isic=="31"| isic=="32"| isic=="33"| isic=="34"| isic=="36"| isic=="37")
+replace increase = (isic=="23"|isic=="24"|isic=="25"|isic=="26"|isic=="27"|isic=="28"|isic=="29"| isic=="30"| isic=="31"| isic=="32"| isic=="33"| isic=="34"|isic=="35"| isic=="36"| isic=="37")
+label var increase "increase index--high skill"
+bysort year: egen m_emp = sum(emp)
+label var m_emp "total employment in manu"
+gen emp_sm = emp/m_emp
+label var emp_sm "employment share in manu"
+* figure
 twoway (line emp_s year if isic~="D"& increase==0), by(isic, yrescale) ylabel(none)
 twoway (line emp_s year if isic~="D"& increase==1), by(isic, yrescale) scheme(s1mono)
 
-line emp_s year if isic=="D"
-save cn_manu77-20,replace
 
-use cn_manu77-20,clear
-drop if isic=="D"
-collapse (sum) emp (mean) t_emp, by(year increase)
-gen emp_s = emp/t_emp/10000
-twoway (line emp_s year if increase==1) (line emp_s year if increase==0), legend(label(1 "increase") label(2 "de"))
+
+collapse (sum) emp (mean) t_emp m_emp, by(year increase)
+gen emp_sm = emp/m_emp
+label var emp_sm "employment share in manu"
+twoway (line emp_sm year if increase==1& year>1990) (line emp_sm year if increase==0& year>1990), legend(label(1 "increase") label(2 "de"))
 
 
 

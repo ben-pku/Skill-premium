@@ -82,66 +82,7 @@ save us_sp,replace
 * skill_premium -- wage
 **# Bookmark #2
 use us_sp,clear
-/*capture program drop regussp3
-program define regussp3
-	capture{
-		reg lw1 skill experience experience2 
-		gen sp3 = _b[skill]	
-	}
-end
-runby regussp3,by(year)
 
-capture program drop regussp2
-program define regussp2
-	capture{
-		reghdfe lw1 skill experience experience2,absorb(sex race statefip)
-		gen sp2 = _b[skill]	
-	}
-end
-runby regussp2,by(year)
-
-* control industry since 1968
-capture program drop regussp
-gen sp1 = .
-program define regussp 
-	if year>=1968{
-		reghdfe lw1 skill experience experience2,absorb(sex race statefip ind1990)
-		replace sp1 = _b[skill]
-	}
-	else{
-		di "error"
-	}
-end
-runby regussp ,by(year)
-
-*skill premium -- hourwage
-
-capture program drop regussp4
-program define regussp4
-	capture{
-		reghdfe lw2 skill experience experience2 ,absorb(sex race statefip ind1990)
-		gen sp4 = _b[skill]	
-	}
-end
-runby regussp4,by(year)
-
-capture program drop regussp5
-program define regussp5
-	capture{
-		reghdfe lw3 skill experience experience2 ,absorb(sex race statefip ind1990)
-		gen sp5 = _b[skill]	
-	}
-end
-runby regussp5,by(year)
-
-capture program drop regussp6
-program define regussp6
-	capture{
-		reghdfe lw2 skill experience experience2 edu,absorb(sex race statefip ind1990)
-		gen sp6 = _b[skill]	
-	}
-end
-runby regussp6,by(year)*/
 drop if asecwt<0
 gen sp1_c =.
 gen sp1_b =.
