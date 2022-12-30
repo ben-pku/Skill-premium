@@ -1,4 +1,4 @@
-# Skill Premium Readme
+# Trade and Skill Premium Dynamics in Dual Economy: The Case of China
 By Zhuokai Huang
 
 ## Trade Code
