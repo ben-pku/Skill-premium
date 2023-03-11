@@ -10,10 +10,12 @@
 
 
 tic;
-[pa0, state] = parameter(6, 3, 0);
+[pa0, state] = parameter(6, 3, 1);
 [p0, Q0, fl0] = tran(pa0); 
 toc;
 
+%% drawer
+drawer(p0, Q0, fl0, pa0 , 0);
 % 
 % % Counterfactual without capital accumulation
 % [pa2, state] = parameter(6,3, 2);

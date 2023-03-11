@@ -23,7 +23,7 @@ function [p, Q, fl] = tran(  pa )
     flag = 1; % nonnegative value
     iter = 0;
     dif = 10;
-    tol = 1e-7;
+    tol = 1e-4;
     while (iter <=1e4 && dif >tol && flag)
         iter = iter + 1;
         
@@ -81,10 +81,6 @@ function [p, Q, fl] = tran(  pa )
                 Q.H(:, t) = (fl.D_H(: ,: , t) )' * Q.H(:, t-1);
             end
         end
-%         H_lag = [ pa.H Q.H(:, 1:pa.T)] ; %[H0 H(1~T)]
-%         Q.H_h = Q.H ./ H_lag ;
-%         L_lag = [ pa.L Q.L(:, 1:pa.T)] ; %[L0 L(1~T)]
-%         Q.L_h = Q.L ./ L_lag ;
         
 %% 5 solve wage, trade flow, price, rental rate, capital labor ratio
         % solve w_H, w_L, r (absolute level, t=0) , given S0, l0
@@ -178,6 +174,8 @@ function [p, Q, fl] = tran(  pa )
         if sum(Q.u_Hh<0, 'all') ||sum(Q.u_Lh<0, 'all') || sum(Q.sigma<0,'all')
             flag = 0;
         end
+
+        disp(['iteration ' num2str(iter) ', dif_V = ' num2str(dif)]);
         
     end
     

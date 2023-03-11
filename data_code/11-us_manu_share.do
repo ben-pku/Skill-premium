@@ -310,11 +310,20 @@ reshape long emp_s, i(year) j(naics)
 
 
 
+clear
+cd "C:\Users\Benjamin Hwang\Documents\大三_下\LijunZhu-project-2022\skill_premium_sc\data\structural_change\US_SC"
+use "nberces5818v1_n2012", clear
 
+tostring naics, replace
+gen naics3 = substr(naics, 1,3)
+collapse (sum) emp , by(naics3 year)
 
+bysort year: egen t_emp  = sum(emp)
+gen emp_s = emp/t_emp
+sort year naics3
+destring naics3, replace
+gen high = (naics3==312 | naics3==323 | naics3==324|naics3==325|naics3==331|naics3==333|naics3==334|naics3==335|naics3==336)
 
-
-
-
-
-
+collapse t_emp (sum) emp emp_s, by(year high)
+twoway (scatter emp_s year if high==0, msize(small)  )  (scatter emp_s year if high==1,  msize(small)), graphregion(color(white)) legend( label(1 "low-skill")  label(2 "high-skill")) scheme(s1mono) xtitle("year") ytitle("emp. share in manu.")
+save highlow-manu-us,replace

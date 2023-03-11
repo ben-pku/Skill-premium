@@ -1,0 +1,9 @@
+READ ME
+
+Jiulia code for the model economy toolkit for 
+
+"Dynamic Spatial General Equilibrium" 
+
+(Benny Kleinman, Ernest Liu and Stephen Redding)
+
+December 2022

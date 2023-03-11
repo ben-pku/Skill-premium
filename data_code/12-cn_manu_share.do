@@ -3,9 +3,17 @@
 
 cd "C:\Users\Benjamin Hwang\Documents\大三_下\LijunZhu-project-2022\skill_premium_sc\data\structural_change\cn_SC"
 
-
+use cnmanu78-21, clear
 twoway (scatter emp_s year if high==0& year>=1985, msize(small)  )  (scatter emp_s year if high==1& year>=1985,  msize(small)), graphregion(color(white)) legend( label(1 "low-skill")  label(2 "high-skill")) scheme(s1mono) xtitle("year") ytitle("emp. share in manu.")
 
+reshape wide emp_s, i(year) j(high)
+merge 1:1 year using cn_emp1978-2020
+drop _merge
+gen ih_s = i_s * emp_s1
+gen il_s = i_s * emp_s0
+
+twoway  (scatter il_s year, msize(small)) (scatter ih_s year, msize(small)), graphregion(color(white)) legend( label(1 "low-skill")  label(2 "high-skill")) scheme(s1mono) xtitle("year") ytitle("emp. share %")
+save cnemp78-21, replace 
 /*
 reshape long emp, i(ind) j(year)
 bysort year: egen t_emp = sum(emp)
