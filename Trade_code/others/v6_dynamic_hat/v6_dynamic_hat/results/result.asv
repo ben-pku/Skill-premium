@@ -1,0 +1,8 @@
+for tt = (1:301)
+
+    wl = w
+    rk
+
+    GDP(:,tt) = 
+
+end

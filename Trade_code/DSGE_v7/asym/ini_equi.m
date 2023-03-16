@@ -23,14 +23,13 @@ end
 % 3a guess and solve E, I
 maxit = 1e4;
 dif = 10;
-tol = 1e-14;
+tol = 1e-8;
 for iter = 1: maxit
     if dif < tol
         break
     end
 
-    Q.E0 = Q.sigma0 .* p.r0 .* pa.k0;
-    Q.I0 = (1-Q.sigma0) .* p.r0 .* pa.k0;
+
     % unit cost
     uc1 = p.w_L0; % i \neq 2
     uc1(2) = NaN;
@@ -61,6 +60,11 @@ for iter = 1: maxit
     sumele = G(4) * (sum(ele, 2)).^ (-1/pa.theta(4));
     p.p4_0 = [ sumele(1);
                     sumele];
+
+    p.R0 = p.r0./ p.p2_0  +1-pa.delta;
+    Q.k(:, 1) = (1-Q.sigma0) .* p.R0 .* pa.k0;
+    Q.E0 = Q.sigma0 .* p.R0.* pa.k0 .* p.p2_0;
+    Q.I0 = p.p2_0.*(Q.k(:, 1)-(1-pa.delta)*pa.k0);
     
     % b expenditure share
     Q.oL0 = share(p.p1_0, p.p2_0, p.p3_0, p.p4_0, p.w_L0, pa); % low worker
@@ -70,13 +74,13 @@ for iter = 1: maxit
     % c update factor prices
     % expenditures in each sector
     X1 = Q.oL0(:, 1) .* p.w_L0 .* pa.L + Q.oH0(:, 1) .* p.w_H0 .* pa.H + Q.oK0(:, 1) .* Q.E0;
-    X1(1) = Q.oL0(:, 1) * p.w_L0(1) * pa.L(1);
+    X1(1) = Q.oL0(1, 1) * p.w_L0(1) * pa.L(1);
     X2 = Q.oL0(:, 2) .* p.w_L0 .* pa.L + Q.oH0(:, 2) .* p.w_H0 .* pa.H + Q.oK0(:, 2) .* Q.E0 + Q.I0;
-    X2(1) = Q.oL0(:, 2) * p.w_L0(1) * pa.L(1);
+    X2(1) = Q.oL0(1, 2) * p.w_L0(1) * pa.L(1);
     X3 = Q.oL0(:, 3) .* p.w_L0 .* pa.L + Q.oH0(:, 3) .* p.w_H0 .* pa.H + Q.oK0(:, 3) .* Q.E0;
-    X3(1) = Q.oL0(:, 3) * p.w_L0(1) * pa.L(1);
+    X3(1) = Q.oL0(1, 3) * p.w_L0(1) * pa.L(1);
     X4 = Q.oL0(:, 4) .* p.w_L0 .* pa.L + Q.oH0(:, 4) .* p.w_H0 .* pa.H + Q.oK0(:, 4) .* Q.E0;
-    X4(1) = Q.oL0(:, 4) * p.w_L0(1) * pa.L(1);
+    X4(1) = Q.oL0(1, 4) * p.w_L0(1) * pa.L(1);
 
     % calculate  w_L w_H r
     % w_H

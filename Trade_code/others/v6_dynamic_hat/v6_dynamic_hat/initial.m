@@ -1,0 +1,25 @@
+function [w_o,r_u] = initial(S,l,k,pa,N,J)
+
+% total income of different industries
+py = goodmkt(S, pa, N, J);
+
+% normalize py such that wage in region 1 ind 1 is equal to 1
+py = py ./ py(1,1) .* l(1,1);
+
+% total income of different areas
+py_r = py(1,:);
+py_u = sum(py(2:J,:),1);
+
+% initial wage and rental rate
+w_o(:,1) = py_r' ./ l(:,1);
+w_o(:,2) = py_u' ./ l(:,2);
+r_u = py_u' ./ k;
+
+
+
+
+
+
+
+
+end

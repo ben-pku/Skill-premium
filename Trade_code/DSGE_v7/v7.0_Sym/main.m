@@ -1,5 +1,6 @@
 %% Trade and Skill premium dynamics in dual economy
-% Version 7.0 --  adding non-homothetic CES into this model
+% Version 7.0 --  adding non-homothetic CES into CDP trade model -- please turn
+% to v7.1 which is constructed as a dual economy 
 % 4 sectors: agri, manu, low-skill service, high-skill service
 % two labor: skilled and unskilled labor
 
